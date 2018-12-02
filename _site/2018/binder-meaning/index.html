@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>tangchiech blog - Binder Series</title>
+  <title>tangchiech blog - Binder从底层到应用完全解析</title>
   <link rel="shortcut icon" href="/assets/images/favicon.ico">
   <link rel="stylesheet" href="/assets/css/style.css">
   <link rel="alternate" type="application/rss+xml" title="My Blog" href="/feed.xml">
@@ -29,7 +29,7 @@
   <section id="wrapper" class="">
     <article class="post">
     <header>
-        <h1>Binder Series</h1>
+        <h1>Binder从底层到应用完全解析</h1>
         <h2 class="headline">November 25, 2018</h2>
     </header>
     <section id="post-body">
@@ -51,21 +51,71 @@
   </li>
 </ul>
 
-<p>基础知识：</p>
+<p><b>Linux mmap</b></p>
 
-<p><b>mmap工作原理</b></p>
+<blockquote>
+  <p>mmap将一个文件或者其它对象映射进内存。</p>
+</blockquote>
 
-<p>1、 linux内核mmap()可以完成访问对象的物理地址到进程的内存地址的映射。</p>
+<p>如果通过mmap读取一个文件那么它的工作流程如下：</p>
+
+<p>1、 映射文件对象F到进程内存地址。</p>
 
 <p>2、 进程A发起对映射地址区间发起读写操作,通过查询页表发现数据并没有在物理页上（内存分页）。因为目前只建立了地址映射，真正的硬盘数据还没有拷贝到内存中，引发缺页异常。</p>
 
-<p>3、 缺页异常引发内核去装载磁盘数据到进程主存中。</p>
+<p>3、 缺页异常引发内核去装载磁盘数据到进程主存中。拷贝完成。</p>
+
+<p><img src="/assets/images/mmap_work.png" alt="index page" /></p>
+
+<p>可以看到mmap之后进程内存中存会有被映射区的指针。</p>
+
+<p>C函数：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="o">*</span><span class="n">mmap</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">start</span><span class="p">,</span><span class="kt">size_t</span> <span class="n">length</span><span class="p">,</span><span class="kt">int</span> <span class="n">prot</span><span class="p">,</span><span class="kt">int</span> <span class="n">flags</span><span class="p">,</span><span class="kt">int</span> <span class="n">fd</span><span class="p">,</span><span class="kt">off_t</span> <span class="n">offsize</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>案例:</p>
+
+<p>使用mmap完成文件拷贝</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;sys/stat.h&gt;
+#include &lt;fcntl.h&gt;
+#include &lt;unistd.h&gt;
+</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+   <span class="k">struct</span> <span class="n">stat</span> <span class="n">s</span><span class="p">;</span>
+   <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">file_name</span> <span class="o">=</span> <span class="s">"/Users/tangjie/Downloads/test.txt"</span><span class="p">;</span>
+
+   <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="n">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span><span class="n">O_RDONLY</span><span class="p">);</span>
+   
+   <span class="c1">//获取文件状态信息保存到s
+</span>   <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">fstat</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span><span class="o">&amp;</span><span class="n">s</span><span class="p">);</span>
+   
+   <span class="c1">//获取文件大小
+</span>   <span class="kt">int</span> <span class="n">size</span> <span class="o">=</span> <span class="n">s</span><span class="p">.</span><span class="n">st_size</span><span class="p">;</span>
+
+   <span class="c1">//映射地址到进程的地址空间
+</span>   <span class="kt">char</span> <span class="o">*</span><span class="n">mapped</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">PROT_READ</span><span class="p">,</span><span class="n">MAP_PRIVATE</span><span class="p">,</span><span class="n">fd</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+
+   <span class="n">printf</span><span class="p">(</span><span class="s">"result = %s"</span><span class="p">,</span><span class="n">mapped</span><span class="p">);</span>
+   <span class="n">close</span><span class="p">(</span><span class="n">fd</span><span class="p">);</span>
+
+   <span class="n">munmap</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">size</span><span class="p">);</span>
+
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
 
 <p>mmap较之于传统IO有两个特点：</p>
 
 <ul>
     <li>比传统IO少一次内存拷贝，访问数据时发生缺页异常后从磁盘加载数据到用户进程完成拷贝。传统IO需要需要从磁盘-&gt;内核空间-&gt;用户空间。主要原因是操作系统为了权限和安全性考虑，把<b>部分指令封装到内核且内核空间只能供内核指令访问</b>。用户空间需要从内核空间访问数据。</li>
-    <li>可以实现父子进程/用户进程之间的内存共享</li>
+    <li><b>可以实现父子进程/用户进程之间的内存共享</b></li>
 </ul>
 
 <p></p>
@@ -83,7 +133,7 @@
     </a>
 
     <section id="sharing">
-        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://tangchiech.io/2018/binder-meaning/ - Binder Series by @YourTwitterUsername"><span class="icon-twitter"> Tweet</span></a>
+        <a class="twitter" href="https://twitter.com/intent/tweet?text=http://tangchiech.io/2018/binder-meaning/ - Binder从底层到应用完全解析 by @YourTwitterUsername"><span class="icon-twitter"> Tweet</span></a>
 
 <a class="facebook" href="#" onclick="
     window.open(
