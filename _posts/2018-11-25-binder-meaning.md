@@ -5,7 +5,7 @@ description: Binder是什么，在Android中角色
 categories: [blog, Android基础]
 ---
 
-# Binder Overview
+# Binder 概览
 
 Binder用于完成Android<b>进程</b>之间的<b>通信</b>（IPC）。  
 
@@ -16,9 +16,9 @@ Binder用于完成Android<b>进程</b>之间的<b>通信</b>（IPC）。
 - 进程间通信(AIDL,Messenger)
 - 与本地Service通信
 
-<br>
-# Binder实现IPC基本原理
+<br><br><br>
 
+# Binder实现IPC基本原理
 
 <b>Linux mmap</b>
 
@@ -42,17 +42,8 @@ C函数：
 void *mmap(void *start,size_t length,int prot,int flags,int fd,off_t offsize)
 ```
 
-案例:
-
-使用mmap完成文件拷贝
-
+案例:使用mmap完成文件拷贝。
 ```c
-#include <stdio.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-
 
 int main()
 {
@@ -87,6 +78,98 @@ int main()
     <li><b>可以实现父子进程/用户进程之间的内存共享</b></li>
 </ul>
 
-
+>binder正是借助用户进程之间的内存共享完成的跨进程通信。
+
+案例：mmap实现跨进程内存共享案例
+
+文件ipc_mmap_a.c
+
+```c
+
+int main()
+{
+    struct stat s;
+    const char * file_name = "/Users/tangjie/Downloads/test.txt";
+
+    int fd = open(file_name,O_RDWR);
+   
+    //获取文件状态信息保存到s
+    int status = fstat(fd,&s);
+   
+    //获取文件大小
+    int size = s.st_size;
+
+    //映射地址到进程的地址空间
+    char *mapped = mmap(0,size,PROT_READ,MAP_SHARED,fd,0);
+
+    close(fd);
+
+    /* 每隔两秒查看存储映射区是否被修改 */  
+    while (1) {  
+        printf("%s\n", mapped);  
+        sleep(2);  
+    }  
+  
+   return 0;
+}
+```
+
+terminal 命令编译&运行 >
+
+```
+ $ gcc -o ipc_mmap_a ipc_mmap_a.c
+ $ ./ipc_mmap_a 
+```
+
+输出结果：
+
+test content
+
+test content
+
+.. 
+
+这里两秒输出一次test.text中的内容。仔细的同学注意到这里的map模式区别于之前的拷贝案例改成了MAP_SHARED，接下来我们在再开启一个terminal，相当于另外一个进程。编译执行ipc_mmap_b.c的内容。
+
+文件：ipc_mmap_b.c
+
+```c
+int main()
+{
+    struct stat s;
+    const char * file_name = "/Users/tangjie/Downloads/test.txt";
+
+    int fd = open(file_name,O_RDWR);
+   
+    //获取文件状态信息保存到s
+    int status = fstat(fd,&s);
+   
+    //获取文件大小
+    int size = s.st_size;
+
+    //映射地址到进程的地址空间
+    char *mapped = mmap(0,size,PROT_READ | PROT_WRITE,MAP_SHARED,fd,0);
+
+    close(fd);
+
+    mapped[1] = '#'; 
+
+    printf("%s\n", mapped);   
+    return 0;
+}
+```
+这里可以看到我们看到新的进程模块也读取了同一块区域的内容，并直接通过映射地址修改了内容，即'e'改成'#'。编译运行后。
+
+查看先前打开的a terminal的打印输出。
+
+test content
+
+t#st content
+
+t#st content
+
+再B进程修改了共享的映射区域后，A进程读到的内容从test content也变成了t#st content。继而完成了<b>共享的通信</b>。
+
+
 
 
