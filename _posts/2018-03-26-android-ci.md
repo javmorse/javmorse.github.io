@@ -7,7 +7,7 @@ categories: [blog, Android]
 
 Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。
 
-> 注：文章内容有限，更多是提供思路，涉及要有些技术细节不做细致描述。具体的可以回复或者私信沟通。
+> 文章内容有限，更多是提供思路，涉及要有些技术细节不做细致描述。具体的可以回复或者私信沟通。
 
 需要解决的问题列举如下：
 - Library工程模块能够快速、便捷提供静态包。
@@ -211,11 +211,11 @@ compile rootProject.CommonModule // 此处的version从version_config中获取
 ```
 CommonModule即为version_config.xml中定义的name节点。
 
-到这里只差一步，那就是jenkins打包上传之后自动升级version_config中的versionName。
+到这里只差一步，那就是<b>jenkins打包上传之后自动升级version_config中的versionName</b>。
 
 为了让大家都能得到更新，可以在job完成的时候通过git api直接修改并提交version_config中的versionName。
 
-同样使用python来完成。python有成熟的git/gitlab/svn工具包。这里推荐几个：
+同样可以使用python来完成。python有成熟的git/gitlab/svn工具包。这里推荐几个：
 
 [python-gitlab/python-gitlab](http://link.zhihu.com/?target=https%3A//github.com/python-gitlab/python-gitlab)
 
