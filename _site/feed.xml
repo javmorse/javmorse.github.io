@@ -10,7 +10,7 @@
         <title>Binder从底层到应用完全解析</title>
         
         
-          <description>&lt;h1 id=&quot;binder-overview&quot;&gt;Binder Overview&lt;/h1&gt;
+          <description>&lt;h1 id=&quot;binder-概览&quot;&gt;Binder 概览&lt;/h1&gt;
 
 </description>
         
@@ -20,17 +20,16 @@
       </item>
     
       <item>
-        <title>Welcome to Jekyll!</title>
+        <title>从零搭建Android持续集成平台</title>
         
         
-          <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory - edit this post and re-build (or run with the &lt;code class=&quot;highlighter-rouge&quot;&gt;-w&lt;/code&gt; switch) to see your changes!
-To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention: YYYY-MM-DD-name-of-post.ext.&lt;/p&gt;
+          <description>&lt;p&gt;Android工程组件化之后业务和组件都比较独立。静态库升级以及集成打包工作会分散到不同职责所在的同学，模块发布测试流程涉及到的可能不止是开发的同学，也包括测试。本文介绍如何借助Jenkins工具和Django web平台完成自动化工程构建。&lt;/p&gt;
 
 </description>
         
-        <pubDate>Sun, 10 Nov 2013 18:18:00 +0800</pubDate>
-        <link>http://localhost:4000/2013/welcome-to-jekyll/</link>
-        <guid isPermaLink="true">http://localhost:4000/2013/welcome-to-jekyll/</guid>
+        <pubDate>Mon, 26 Mar 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/android-ci/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/android-ci/</guid>
       </item>
     
   </channel>

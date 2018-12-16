@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "如何搭建Android持续集成平台"
+title:  "从零搭建Android持续集成平台"
 description: Bundle打包和持续集成思路跟踪
 categories: [blog, Android]
 ---
@@ -15,6 +15,8 @@ Android工程组件化之后业务和组件都比较独立。静态库升级以�
 - 自动化的模块集成。
 - 可视化的操作平台。
 
+<br>
+<br>
 <h1>使用maven仓库管理静态</h1>
 
 gradle支持静态的管理方式有多种方式。
@@ -70,11 +72,16 @@ project.ext {
 
 进入项目根路径,module_name为需要发布静态库library module的名称,执行
 
-```./gradlew :module_name:uploadArchives ```
+```java
+./gradlew :module_name:uploadArchives 
+```
 
 dependency依赖方式：
 
-``` compile 'com.ctrip:android-common:1.0.0@aar' ```
+
+```java
+compile 'com.ctrip:android-common:1.0.0@aar'
+```
 
 
 以上可以完成静态库发布/升级到maven仓库的流程。依赖的发布和升级管理管理已经方便了很多，不过只能开发在本地运行脚本来完成，版本号的更新依然需要通过修改build.gradle中的ext版本提交才行。发布的流程比较繁琐而且容易导致冲突。
@@ -120,7 +127,9 @@ build-script里面包含了打包和上传的脚本。
 
 编译/打包module核心：
 
-```./gradlew clean assembleRelease```
+```java
+./gradlew clean assembleRelease 
+```
 
 <h3>上传</h3>
 
@@ -151,7 +160,9 @@ Project setting中勾选This project is parameterized选项，添加对应所需
 
 获取变量后传入到打包脚本，供打包脚本使用：
 
-`sh 'python android_bundle_build.py  -groupId $groupId -artifactId $artifactId -version $version'`
+```java
+sh 'python android_bundle_build.py  -groupId $groupId -artifactId $artifactId -version $version'
+```
 
 <b>$变量名 即可获得页面填写的变量值（groovy 语法）。</b>
 

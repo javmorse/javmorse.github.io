@@ -48,7 +48,7 @@ void *mmap(void *start,size_t length,int prot,int flags,int fd,off_t offsize)
 int main()
 {
    struct stat s;
-   const char * file_name = "/Users/tangjie/Downloads/test.txt";
+   const char * file_name = "~/Downloads/test.txt";
 
    int fd = open(file_name,O_RDONLY);
    
@@ -89,7 +89,7 @@ int main()
 int main()
 {
     struct stat s;
-    const char * file_name = "/Users/tangjie/Downloads/test.txt";
+    const char * file_name = "~/Downloads/test.txt";
 
     int fd = open(file_name,O_RDWR);
    
@@ -170,8 +170,88 @@ t#st content
 
 再B进程修改了共享的映射区域后，A进程读到的内容从test content也变成了t#st content。继而完成了<b>共享的通信</b>。
 
->Binder在打开设备描述文件之后，Binder驱动会通过mmap在内核缓存开辟物理分页，通信内容保存在此区域，内核空间和用户空间映射到同存有内核缓存区域的映射地址，把用户空间的地址交给进程就能直接获取到内核缓存区域内容。
+<b>Android Binder驱动部分解析</b>
 
+同样对于Android Binder，在打开设备描述文件之后，Binder驱动会通过mmap在内核缓存开辟物理分页，通信内容保存在此区域，内核空间和用户空间映射到同存有内核缓存区域的映射地址，把用户空间的地址交给进程就能直接获取到内核缓存区域内容。
 
+```c
+static int binder_mmap(struct file *filp, struct vm_area_struct *vma)
+{
 
+	int ret;
+	struct vm_struct *area;
+	struct binder_proc *proc = filp->private_data;
+	const char *failure_string;
+	struct binder_buffer *buffer;
+
+	if ((vma->vm_end - vma->vm_start) > SZ_4M)
+		vma->vm_end = vma->vm_start + SZ_4M;
+
+	if (binder_debug_mask & BINDER_DEBUG_OPEN_CLOSE)
+		printk(KERN_INFO
+			   "binder_mmap: %d %lx-%lx (%ld K) vma %lx pagep %lx\n",
+			   proc->pid, vma->vm_start, vma->vm_end,
+			   (vma->vm_end - vma->vm_start) / SZ_1K, vma->vm_flags,
+			   (unsigned long)pgprot_val(vma->vm_page_prot));
+
+	if (vma->vm_flags & FORBIDDEN_MMAP_FLAGS)
+	{
+		ret = -EPERM;
+		failure_string = "bad vm_flags";
+		goto err_bad_arg;
+	}
+	vma->vm_flags = (vma->vm_flags | VM_DONTCOPY) & ~VM_MAYWRITE;
+
+	if (proc->buffer)
+	{
+		ret = -EBUSY;
+		failure_string = "already mapped";
+		goto err_already_mapped;
+	}
+
+	area = get_vm_area(vma->vm_end - vma->vm_start, VM_IOREMAP);
+	if (area == NULL)
+	{
+		ret = -ENOMEM;
+		failure_string = "get_vm_area";
+		goto err_get_vm_area_failed;
+	}
+	proc->buffer = area->addr;
+	proc->user_buffer_offset = vma->vm_start - (uintptr_t)proc->buffer;
+
+    ...
+
+	proc->pages = kzalloc(sizeof(proc->pages[0]) * ((vma->vm_end - vma->vm_start) / PAGE_SIZE), GFP_KERNEL);
+	if (proc->pages == NULL)
+	{
+		ret = -ENOMEM;
+		failure_string = "alloc page array";
+		goto err_alloc_pages_failed;
+	}
+	proc->buffer_size = vma->vm_end - vma->vm_start;
+
+	vma->vm_ops = &binder_vm_ops;
+	vma->vm_private_data = proc;
+
+	if (binder_update_page_range(proc, 1, proc->buffer, proc->buffer + PAGE_SIZE, vma))
+	{
+		ret = -ENOMEM;
+		failure_string = "alloc small buf";
+		goto err_alloc_small_buf_failed;
+	}
+	buffer = proc->buffer;
+	INIT_LIST_HEAD(&proc->buffers);
+	list_add(&buffer->entry, &proc->buffers);
+	buffer->free = 1;
+	binder_insert_free_buffer(proc, buffer);
+	proc->free_async_space = proc->buffer_size / 2;
+	barrier();
+	proc->files = get_files_struct(current);
+	proc->vma = vma;
+
+	/*printk(KERN_INFO "binder_mmap: %d %lx-%lx maps %p\n", proc->pid, vma->vm_start, vma->vm_end, proc->buffer);*/
+	return 0;
+}
+```
+
 
