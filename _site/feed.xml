@@ -7,6 +7,18 @@
     <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
     
       <item>
+        <title>Mask掩码计算及应用</title>
+        
+        
+          <description>&lt;p&gt;我们在阅读源码的时候经常会看到有mask flag的与或运算，往往出现在判断的语句中，另我十分的困惑。&lt;/p&gt;
+</description>
+        
+        <pubDate>Sun, 16 Dec 2018 00:00:00 +0800</pubDate>
+        <link>http://localhost:4000/2018/mask/</link>
+        <guid isPermaLink="true">http://localhost:4000/2018/mask/</guid>
+      </item>
+    
+      <item>
         <title>Binder从底层到应用完全解析</title>
         
         

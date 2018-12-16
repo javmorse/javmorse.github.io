@@ -6,8 +6,8 @@
   display: block;
   overflow-x: auto;
   /*padding: 0.5em;*/
-  background: #272b2d;
-  color: #d0d0d0;
+  background: #f7f7f7;
+  color: #212121;
   -webkit-text-size-adjust: none;
 }
 
@@ -22,14 +22,16 @@
 .hljs-request,
 .hljs-status,
 .clojure .hljs-attribute {
-  color: #ebde68;
+  /* color: #ebde68; */
+  color: #9c27b0;
 }
 
 .hljs-sub .hljs-keyword,
 .method,
 .hljs-list .hljs-title,
 .nginx .hljs-title {
-  color: #ffffb6;
+  /* color: #ffffb6; */
+  color:#37474f
 }
 
 .hljs-string,
@@ -40,7 +42,8 @@
 .apache .hljs-cbracket,
 .hljs-date,
 .coffeescript .hljs-attribute {
-  color: #c1ef65;
+  /* color: #c1ef65; */
+  color: #0d904f;
 }
 
 .hljs-subst {
@@ -48,7 +51,8 @@
 }
 
 .hljs-regexp {
-  color: #e9c062;
+  /* color: #e9c062; */
+  color: #37474f;
 }
 
 .hljs-title,
@@ -61,7 +65,8 @@
 .smalltalk .hljs-class,
 .hljs-doctag,
 .nginx .hljs-built_in {
-  color: #c1ef65;
+  /* color: #c1ef65; */
+  color: #0d904f;
 }
 
 .hljs-symbol,

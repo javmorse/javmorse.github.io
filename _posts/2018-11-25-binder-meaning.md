@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Binder从底层到应用完全解析"
-description: Binder是什么，在Android中角色
+description: 未更新完...
 categories: [blog, Android基础]
 ---
 
