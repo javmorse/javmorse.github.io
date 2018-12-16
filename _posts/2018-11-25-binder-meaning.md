@@ -123,11 +123,12 @@ terminal 命令编译&运行 >
 
 输出结果：
 
+```
 test content
 
 test content
-
 .. 
+```
 
 这里两秒输出一次test.text中的内容。仔细的同学注意到这里的map模式区别于之前的拷贝案例改成了MAP_SHARED，接下来我们在再开启一个terminal，相当于另外一个进程。编译执行ipc_mmap_b.c的内容。
 
@@ -162,11 +163,13 @@ int main()
 
 查看先前打开的a terminal的打印输出。
 
+```
 test content
 
 t#st content
 
 t#st content
+```
 
 再B进程修改了共享的映射区域后，A进程读到的内容从test content也变成了t#st content。继而完成了<b>共享的通信</b>。
 
