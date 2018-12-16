@@ -53,7 +53,8 @@ apply plugin: 'maven'
 uploadArchives {
    repositories.mavenDeployer {
            repository(url:"${project.ext.uploadRepo}") {
-               authentication(userName: "", password: "")  //nexus maven权限用户名密码
+               /* nexus maven权限用户名密码 */
+               authentication(userName: "", password: "")  
                pom.groupId = project.ext.groupId
                pom.artifactId = project.ext.artifactId
                pom.version = project.ext.versionName
@@ -114,7 +115,7 @@ Jenkins支持多种类型的job，其中常用的是Freestyle project、maven pr
 ```java
 node {
    stage('Preparation') { 
-     // ssh get build script repository，ssh-url填充你的git url
+     /* ssh get build script repository，ssh-url填充你的git url */
      git url:'git@ssh-url',branch:'master'
    }
 ... 此处省略其他stage
@@ -133,16 +134,18 @@ build-script里面包含了打包和上传的脚本。
 
 <h3>上传</h3>
 
-```./gradlew :module_name:uploadArchives```
+```java
+./gradlew :module_name:uploadArchives
+```
 
 本人善用python，而且适用Linux/windows/macos任何平台。编译和上传的步骤这里假设包装到android_bundle_build.py文件里。这里建议把脚本也放到版本控制git repo或者工程仓库里面，同样通过SCM工具或者pipline script下载下来脚本所在的工程。接下来让jenkins job自动执行此脚本。pipline stage命名为"Build"嵌入到上个步骤的node阶段。
 
 ```java
 stage('Preparation') { 
-//download project source and build script source
+   /* download project source and build script source */
 }
 state('Build'){
-// sh call build script
+   /* sh call build script*/
    sh 'python android_bundle_build.py  构建参数 '
 }
 ```
@@ -170,7 +173,11 @@ sh 'python android_bundle_build.py  -groupId $groupId -artifactId $artifactId -v
 
 完成了自动发布和升级静态库，实际上其他的开发的同学还是获取不到最新的依赖版本。
 build.gradle中的依赖版本
-compile 'com.test@1.0.0@aar' // 此处的version还是没有得到更新的
+
+```java
+/* 此处的version还是没有得到更新的*/
+compile 'com.test@1.0.0@aar'
+```
 
 <b>解决方案</b>
 
@@ -217,8 +224,9 @@ apply from: rootDir.getAbsolutePath() + "/script/parse_version.gradle"
 ```
 
 此时的依赖方式更改为：
-```
-compile rootProject.CommonModule // 此处的version从version_config中获取
+```java
+/* 此处的version从version_config中获取 */
+compile rootProject.CommonModule 
 ```
 CommonModule即为version_config.xml中定义的name节点。
 

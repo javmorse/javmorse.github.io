@@ -82,7 +82,8 @@ nexus的搭建网上比较多不做详述。</p>
 <span class="n">uploadArchives</span> <span class="o">{</span>
    <span class="n">repositories</span><span class="o">.</span><span class="na">mavenDeployer</span> <span class="o">{</span>
            <span class="n">repository</span><span class="o">(</span><span class="nl">url:</span><span class="s">"${project.ext.uploadRepo}"</span><span class="o">)</span> <span class="o">{</span>
-               <span class="n">authentication</span><span class="o">(</span><span class="nl">userName:</span> <span class="s">""</span><span class="o">,</span> <span class="nl">password:</span> <span class="s">""</span><span class="o">)</span>  <span class="c1">//nexus maven权限用户名密码</span>
+               <span class="cm">/* nexus maven权限用户名密码 */</span>
+               <span class="n">authentication</span><span class="o">(</span><span class="nl">userName:</span> <span class="s">""</span><span class="o">,</span> <span class="nl">password:</span> <span class="s">""</span><span class="o">)</span>  
                <span class="n">pom</span><span class="o">.</span><span class="na">groupId</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">groupId</span>
                <span class="n">pom</span><span class="o">.</span><span class="na">artifactId</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">artifactId</span>
                <span class="n">pom</span><span class="o">.</span><span class="na">version</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="na">ext</span><span class="o">.</span><span class="na">versionName</span>
@@ -136,7 +137,7 @@ nexus的搭建网上比较多不做详述。</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">node</span> <span class="o">{</span>
    <span class="n">stage</span><span class="o">(</span><span class="err">'</span><span class="n">Preparation</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span> 
-     <span class="c1">// ssh get build script repository，ssh-url填充你的git url</span>
+     <span class="cm">/* ssh get build script repository，ssh-url填充你的git url */</span>
      <span class="n">git</span> <span class="nl">url:</span><span class="err">'</span><span class="n">git</span><span class="nd">@ssh</span><span class="o">-</span><span class="n">url</span><span class="err">'</span><span class="o">,</span><span class="nl">branch:</span><span class="err">'</span><span class="n">master</span><span class="err">'</span>
    <span class="o">}</span>
 <span class="o">...</span> <span class="err">此处省略其他</span><span class="n">stage</span>
@@ -154,15 +155,16 @@ nexus的搭建网上比较多不做详述。</p>
 
 <h3>上传</h3>
 
-<p><code class="highlighter-rouge">./gradlew :module_name:uploadArchives</code></p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">./</span><span class="n">gradlew</span> <span class="o">:</span><span class="nl">module_name:</span><span class="n">uploadArchives</span>
+</code></pre></div></div>
 
 <p>本人善用python，而且适用Linux/windows/macos任何平台。编译和上传的步骤这里假设包装到android_bundle_build.py文件里。这里建议把脚本也放到版本控制git repo或者工程仓库里面，同样通过SCM工具或者pipline script下载下来脚本所在的工程。接下来让jenkins job自动执行此脚本。pipline stage命名为”Build”嵌入到上个步骤的node阶段。</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">stage</span><span class="o">(</span><span class="err">'</span><span class="n">Preparation</span><span class="err">'</span><span class="o">)</span> <span class="o">{</span> 
-<span class="c1">//download project source and build script source</span>
+   <span class="cm">/* download project source and build script source */</span>
 <span class="o">}</span>
 <span class="n">state</span><span class="o">(</span><span class="err">'</span><span class="n">Build</span><span class="err">'</span><span class="o">){</span>
-<span class="c1">// sh call build script</span>
+   <span class="cm">/* sh call build script*/</span>
    <span class="n">sh</span> <span class="err">'</span><span class="n">python</span> <span class="n">android_bundle_build</span><span class="o">.</span><span class="na">py</span>  <span class="err">构建参数</span> <span class="err">'</span>
 <span class="o">}</span>
 </code></pre></div></div>
@@ -188,8 +190,11 @@ nexus的搭建网上比较多不做详述。</p>
 <h3>版本升级</h3>
 
 <p>完成了自动发布和升级静态库，实际上其他的开发的同学还是获取不到最新的依赖版本。
-build.gradle中的依赖版本
-compile ‘com.test@1.0.0@aar’ // 此处的version还是没有得到更新的</p>
+build.gradle中的依赖版本</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 此处的version还是没有得到更新的*/</span>
+<span class="n">compile</span> <span class="err">'</span><span class="n">com</span><span class="o">.</span><span class="na">test</span><span class="err">@</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">0</span><span class="nd">@aar</span><span class="err">'</span>
+</code></pre></div></div>
 
 <p><b>解决方案</b></p>
 
@@ -233,7 +238,8 @@ compile ‘com.test@1.0.0@aar’ // 此处的version还是没有得到更新的<
 </code></pre></div></div>
 
 <p>此时的依赖方式更改为：</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>compile rootProject.CommonModule // 此处的version从version_config中获取
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* 此处的version从version_config中获取 */</span>
+<span class="n">compile</span> <span class="n">rootProject</span><span class="o">.</span><span class="na">CommonModule</span> 
 </code></pre></div></div>
 <p>CommonModule即为version_config.xml中定义的name节点。</p>
 
