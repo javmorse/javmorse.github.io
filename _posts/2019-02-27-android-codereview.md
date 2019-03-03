@@ -161,6 +161,9 @@ public static IBULocaleManager getInstance() {
 
 如下：
 ```java 
+
+
+
 private static Object lock1 = new Object();
 private static Object lock2 = new Object();
  
@@ -291,26 +294,20 @@ try {
 
 ## Android其他篇 
 
-1、shark资源命名用产线前缀开头
-
-```java
-<string name="key.myctrip.sign.in" value="登入">key.myctrip.sign.in</string>
-```
-
-2、数据库的操作
+1、数据库的操作
 
 - 确保操作的helper类是单例的并考虑了线程安全问题。
 - 查询的时候尽量使用索引
 - 避免DB过大，会引入较多的系统性问题
 
 <br>
-3、混淆类问题
+2、混淆类问题
 
 - 接入第三方库或者底层库的时候要阅读和关注混淆规则的接入
 - 反射调用的类/方法检查不能混淆，引发导致classnotfound
 
 <br>
-4、注意字符串拼接性能
+3、注意字符串拼接性能
 
 避免大量字符串"+"的操作
 
@@ -322,7 +319,7 @@ for(int i =0 ;i < 100;i++){
 ```
 > 建议使用StringBuiler/StringBuffer等完成
 
-5、注意字符串分隔性能
+4、注意字符串分隔性能
 
 避免在会被频繁调用的方法中使用以下方式分隔字符串
 ```java
@@ -338,7 +335,7 @@ int to = str.indexOf('-', from+1);
 String brown = str.substring(from+1, to);
 ```
 
-6、别再制造Context的内存泄漏了！
+5、别再制造Context的内存泄漏了！
 
 你的Context对象还在被单例或者静态对象持有吗？如下：
 
