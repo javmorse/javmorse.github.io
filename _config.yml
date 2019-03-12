@@ -9,14 +9,14 @@ highlighter: rouge
 
 plugins: [jekyll-paginate]
 paginate: 20
-domain_name: 'http://tangchiech.io'
+domain_name: 'http://javmorse.github.io'
 google_analytics: 'UA-XXXXXXXX-X'
 disqus: false
 disqus_shortname: 'your-disqus-shortname'
 
 # Details for the RSS feed generator
 url:            'http://your-blog-url.example.com'
-author:         'TangChiech'
+author:         'Morse'
 authorTwitter:  'YourTwitterUsername'
 
 permalink:       /:year/:title/
