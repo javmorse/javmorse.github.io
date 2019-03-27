@@ -1,5 +1,5 @@
 ---
-title:  "Android Code Review怎么做"
+title:  "Android Code Review"
 description: 囊括大部分安卓开发容易犯的错，整理成条文
 ## date: add a date when publishing
 ---
