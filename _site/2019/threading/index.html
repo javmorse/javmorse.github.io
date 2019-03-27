@@ -289,8 +289,24 @@ Klass*      _klass;
 
 <p>32位markword存储结构：</p>
 
-<p>25 bit(object hash) | 4bit(GC Generation age) | 1bit(是否偏向锁) | 2bit （锁标志位）
-——————- | ———————– | ———— | —————-</p>
+<table>
+  <thead>
+    <tr>
+      <th>25 bit</th>
+      <th>4bit</th>
+      <th>1bit</th>
+      <th>2bit</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>object hash</td>
+      <td>GC Generation age</td>
+      <td>是否偏向锁</td>
+      <td>锁标志位</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>线程通过拷贝markword记录来进行锁的加锁和释放。线程栈存储一个叫Lock Record的空间，主要用于拷贝对象markword的记录，一旦拷贝成功，就说明当前线程拥有了这个对象的锁。</p>
 

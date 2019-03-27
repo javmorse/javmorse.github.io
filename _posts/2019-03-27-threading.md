@@ -162,8 +162,9 @@ Klass的作用是把C++的class对象包装成java heap 对象。<b>_mark(mark_w
 
 32位markword存储结构：
 
-25 bit(object hash) | 4bit(GC Generation age) | 1bit(是否偏向锁) | 2bit （锁标志位）
-------------------- | ----------------------- | ------------ | ----------------
+25 bit | 4bit | 1bit | 2bit
+---- | ---- | ---- | ----
+object hash | GC Generation age | 是否偏向锁 | 锁标志位
 
 线程通过拷贝markword记录来进行锁的加锁和释放。线程栈存储一个叫Lock Record的空间，主要用于拷贝对象markword的记录，一旦拷贝成功，就说明当前线程拥有了这个对象的锁。
 
