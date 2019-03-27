@@ -10,7 +10,6 @@ highlighter: rouge
 plugins: [jekyll-paginate]
 paginate: 20
 domain_name: 'http://javmorse.github.io'
-google_analytics: 'UA-XXXXXXXX-X'
 disqus: false
 disqus_shortname: 'your-disqus-shortname'
 
