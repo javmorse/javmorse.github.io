@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Binder通信之MMAP原理"
+title:  "Binder通信之mmap原理"
 description: 学习内存映射技术
 categories: [blog, Android基础]
 ---
