@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Binder从底层到应用完全解析"
-description: 未更新完...
+title:  "Binder通信之MMAP原理"
+description: 学习内存映射技术
 categories: [blog, Android基础]
 ---
 
