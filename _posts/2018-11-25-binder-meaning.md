@@ -1,7 +1,8 @@
 ---
 layout: post
-title: "dekl"
-description: ""
+title:  "Binder通信之mmap原理"
+description: 学习内存映射技术
+categories: [blog, Android]
 ---
 
 # Binder 概览
