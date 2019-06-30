@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "OAuth2.0认证授权workflow探究"
+title: "OAuth2.0认证授权workflow"
 description: 基础知识，了解鉴权和登陆的流程
 categories: [Login, SSO]
 ---
