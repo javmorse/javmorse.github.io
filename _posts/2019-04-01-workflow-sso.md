@@ -15,7 +15,7 @@ categories: [Login, SSO]
 
 SSO这是一个概念方案，其中有我们经常听到的著名的耶鲁大学的CAS系统就是它的一个实现。具体可以了解 [CAS Architecture](https://link.zhihu.com/?target=https%3A//apereo.github.io/cas/4.2.x/planning/Architecture.html)，其工程流程图如下：
 
-![avatar](https://pic2.zhimg.com/80/v2-17ea17193f49abfcb55b4e689e424ec9_hd.jpg)
+![avatar](/assets/images/cas/cas.jpeg)
 
 其中核心要解决的的是引入鉴权和认证的流程，实现多套系统的单一访问需要的是同一套授权方案即可。
 
@@ -34,11 +34,11 @@ OAuth 2.0关注客户端开发者的简易性，同时为Web应用，桌面应�
 
 来看官方的工作流描述：
 
-![](https://pic1.zhimg.com/80/v2-84ce9843b2fde9605a2869e7e4ea3ff0_hd.jpg)
+![](/assets/images/cas/official_flow.jpg)
 
 Abstract Protocol Flow，好吧，是挺抽象，尤其是Autorization Grant是怎么完成的我们还是不得而知。不过我们可以得知<b>想要访问资源服务，我们最终是拿到授权服务分配的Access Token</b>，OAuth 2.0的授权模式有好几种，主要还是根据设计的需求。我们就拿最复杂和最完善的一个模式来分析：授权码模式。同样，我们先看官方的解释：
 
-![](https://pic2.zhimg.com/80/v2-6177bcad3694e399b90a0620285efb05_hd.jpg)
+![](/assets/images/cas/access_code.jpg)
 
 从图中我们可以看出大概的流程，用户访问资源的时候首先要经过授权服务的授权，访问授权服务的过程用户通过客户代理带上注册好的Clent ID 和重定向的地址，授权服务验证好是否正确之后会给到客户代理一个授权码，把授权码带给客户端，客户端可以通过此授权码才能获取可访问的Access Token。前面有总结过，只有拿到有效的Access Token才能畅通的访问到我们的资源服务。
 
@@ -55,7 +55,7 @@ Abstract Protocol Flow，好吧，是挺抽象，尤其是Autorization Grant是�
 
 结合的画一个流程图帮助理解：
 
-![](https://pic2.zhimg.com/80/v2-8861677d88ca7e4f78303ea55ae99369_hd.jpg)
+![](/assets/images/cas/auth_uml.jpg)
 
 重要流程列表
 
